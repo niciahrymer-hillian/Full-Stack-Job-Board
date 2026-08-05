@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Full-Stack-Job-Board — Tour</title>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#06101a;color:#e6e6e6}
+header{padding:18px 24px;border-bottom:1px solid #ffffff14}
+h1,h2{color:#378ADD;margin:.2em 0}
+main{display:grid;grid-template-columns:1fr 1fr;min-height:60vh}
+.lesson,.practice{padding:24px}.lesson{border-right:1px solid #ffffff14}
+nav{display:flex;gap:8px;padding:12px 24px;border-top:1px solid #ffffff14}
+button{background:#378ADD;color:#fff;border:0;border-radius:6px;padding:8px 14px;cursor:pointer;font-size:14px}
+button:disabled{opacity:.4;cursor:default}
+pre{background:#0000005c;border:1px solid #ffffff1a;border-radius:8px;padding:12px;overflow:auto;font-family:ui-monospace,monospace;font-size:13px}
+.diagram{font-family:ui-monospace,monospace;white-space:pre;color:#9fd0ff;font-size:13px;line-height:1.4}
+.step{color:#7fe0a8}
+</style></head>
+<body>
+<header><h1>Full-Stack-Job-Board — Interactive Tour</h1><p id="sub">Lesson 1 of 4 — concept on the left, the code that implements it on the right.</p></header>
+<main>
+  <section class="lesson" id="lesson"></section>
+  <section class="practice" id="practice"></section>
+</main>
+<nav><button id="prev">← Prev</button><button id="next">Next →</button><span id="counter" style="margin-left:auto;align-self:center;opacity:.7"></span></nav>
+<script>
+const lessons = [
+  {title:"1 · The Full-Stack Architecture",
+   left:`<p>Every request takes the same trip. The browser holds <b>UI state</b>; the server owns <b>data state</b>. React Query is the cache that keeps them in sync.</p>
+   <div class="diagram">Browser ──fetch──▶ FastAPI ──ORM──▶ Postgres
+   ▲                  │
+   └──JSON + JWT──────┘</div>
+   <p>The API is <b>stateless</b>: every request carries its own JWT, so any server instance can answer it. That's what lets C-4 scale it on Kubernetes.</p>`,
+   right:`<pre># the trip, in one endpoint
+@app.get("/jobs", response_model=list[JobRead])
+def list_jobs(db: Session = Depends(get_db),
+              page: int = 1, size: int = 20):
+    off, lim = paginate(page, size)
+    return db.scalars(
+        select(Job).offset(off).limit(lim)
+    ).all()</pre>`},
+  {title:"2 · JWT Authentication",
+   left:`<p>Auth is a four-step pipeline. The password is <b>never stored</b> — only its bcrypt hash. The token is signed, not encrypted, so the server trusts it without a DB lookup.</p>
+   <div class="diagram"><span class="step">register</span> ▶ hash(pw) ▶ store user
+<span class="step">login</span>    ▶ verify(pw, hash) ▶ sign JWT
+<span class="step">request</span>  ▶ Authorization: Bearer &lt;jwt&gt;
+<span class="step">protect</span>  ▶ decode + load user</div>`,
+   right:`<pre>def create_token(sub: str) -> str:
+    payload = {"sub": sub,
+               "exp": utcnow() + timedelta(hours=12)}
+    return jwt.encode(payload, SECRET_KEY, "HS256")
+
+def get_current_user(token = Depends(oauth2),
+                     db = Depends(get_db)) -> User:
+    sub = jwt.decode(token, SECRET_KEY, ["HS256"])["sub"]
+    return db.get(User, int(sub))  # 401 if None</pre>`},
+  {title:"3 · React Query — Server State",
+   left:`<p><code>useEffect</code> + <code>useState</code> reinvents caching, loading flags, and refetch logic in every component. React Query does it once.</p>
+   <p>A <b>mutation</b> invalidates the query key, and every component reading that key re-renders with fresh data — no manual wiring.</p>`,
+   right:`<pre>function useJobs() {
+  return useQuery({ queryKey: ["jobs"],
+                    queryFn: () => api.get("/jobs") });
+}
+function useCreateJob() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (j) => api.post("/jobs", j),
+    onSuccess: () => qc.invalidateQueries(
+        { queryKey: ["jobs"] }),  // refetch
+  });
+}</pre>`},
+  {title:"4 · Database Migrations",
+   left:`<p>The schema changes over time. Alembic turns each change into a <b>versioned, reversible</b> file so every environment converges to the same shape.</p>
+   <div class="diagram">edit models.py
+  ▶ alembic revision --autogenerate
+  ▶ alembic upgrade head   (forward)
+  ▶ alembic downgrade -1   (rollback)</div>`,
+   right:`<pre># versions/0002_add_application.py
+def upgrade():
+    op.create_table("applications",
+      sa.Column("id", sa.Integer, primary_key=True),
+      sa.Column("job_id", sa.ForeignKey("jobs.id")),
+      sa.Column("user_id", sa.ForeignKey("users.id")))
+
+def downgrade():
+    op.drop_table("applications")</pre>`},
+];
+let i = 0;
+const L = document.getElementById("lesson"), P = document.getElementById("practice");
+const sub = document.getElementById("sub"), counter = document.getElementById("counter");
+function render(){
+  const l = lessons[i];
+  L.innerHTML = "<h2>"+l.title+"</h2>"+l.left;
+  P.innerHTML = "<h2>The Code</h2>"+l.right;
+  sub.textContent = "Lesson "+(i+1)+" of "+lessons.length+" — concept on the left, code on the right.";
+  counter.textContent = (i+1)+" / "+lessons.length;
+  document.getElementById("prev").disabled = i===0;
+  document.getElementById("next").disabled = i===lessons.length-1;
+}
+document.getElementById("prev").onclick=()=>{if(i>0){i--;render();}};
+document.getElementById("next").onclick=()=>{if(i<lessons.length-1){i++;render();}};
+render();
+</script>
+</body></html>
