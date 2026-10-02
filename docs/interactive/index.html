@@ -1,101 +1,411 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1"><title>Full-Stack-Job-Board &mdash; Tour</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Full-Stack-Job-Board — Interactive Tour</title>
 <style>
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#06101a;color:#e6e6e6}
-header{padding:18px 24px;border-bottom:1px solid #ffffff14}
-h1,h2{color:#378ADD;margin:.2em 0}
-main{display:grid;grid-template-columns:1fr 1fr;min-height:60vh}
-.lesson,.practice{padding:24px}.lesson{border-right:1px solid #ffffff14}
-nav{display:flex;gap:8px;padding:12px 24px;border-top:1px solid #ffffff14}
-button{background:#378ADD;color:#fff;border:0;border-radius:6px;padding:8px 14px;cursor:pointer;font-size:14px}
-button:disabled{opacity:.4;cursor:default}
-pre{background:#0000005c;border:1px solid #ffffff1a;border-radius:8px;padding:12px;overflow:auto;font-family:ui-monospace,monospace;font-size:13px}
-.diagram{font-family:ui-monospace,monospace;white-space:pre;color:#9fd0ff;font-size:13px;line-height:1.4}
-.step{color:#7fe0a8}
-</style></head>
+  :root{--bg:#061821;--accent:#22D3EE;--text:#e8f6fa;--muted:#7fa8b3;--panel:#ffffff0a;--ok:#2EA56B;--bad:#C2453E;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  header{padding:18px 24px;border-bottom:1px solid #ffffff1a}
+  header h1{margin:0;font-size:18px}
+  header p{margin:4px 0 0;color:var(--muted);font-size:13px}
+  .pills{display:flex;gap:8px;padding:12px 24px;flex-wrap:wrap}
+  .pill{padding:6px 12px;border-radius:999px;font-size:12px;cursor:pointer;background:var(--panel);border:1px solid #ffffff1a;color:var(--muted)}
+  .pill.active{background:var(--accent);color:#06222b;font-weight:700;border-color:var(--accent)}
+  main{display:grid;grid-template-columns:1fr 1fr;min-height:62vh}
+  .lesson,.practice{padding:24px;overflow:auto}
+  .lesson{border-right:1px solid #ffffff1a}
+  .lesson h2{color:#67e8f9;margin-top:0}
+  .lesson code,.lesson pre{background:#00000055;border-radius:6px}
+  .lesson pre{padding:12px;overflow:auto;font-size:13px}
+  .lesson code{padding:1px 5px;font-size:13px}
+  .practice h3{margin-top:0;color:var(--muted);text-transform:uppercase;font-size:12px;letter-spacing:1px}
+  .practice pre{background:#00000055;border-radius:8px;padding:12px;overflow:auto;font-size:13px;font-family:ui-monospace,monospace}
+  nav{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-top:1px solid #ffffff1a}
+  button{background:var(--accent);color:#06222b;border:0;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer;margin:0 8px 0 0}
+  button.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+  button:disabled{opacity:.4;cursor:default}
+  .note{font-size:12px;color:var(--muted);margin-top:8px}
+  .diagram-card{background:#fff;border-radius:10px;padding:16px;margin-bottom:14px}
+  .diagram-card svg{width:100%;height:auto;display:block}
+  .diagram-card figcaption{font-family:sans-serif;font-size:11px;color:#666;margin-bottom:6px}
+  .quiz-panel{padding:24px;max-width:760px;margin:0 auto}
+  .quiz-panel h2{color:#67e8f9;margin-top:0}
+  .qtext{font-size:16px;font-weight:600;margin:6px 0 14px}
+  .qopt{display:block;width:100%;text-align:left;background:var(--panel);color:var(--text);border:1px solid #ffffff1f;border-radius:8px;padding:12px 14px;margin:8px 0;cursor:pointer;font-size:14px;font-family:inherit}
+  .qopt:hover:not(:disabled){border-color:var(--accent)}
+  .qopt.ok{border-color:var(--ok);background:#2ea56b22}
+  .qopt.bad{border-color:var(--bad);background:#c2453e22}
+  .qexplain{display:none;margin-top:12px;padding:12px;border-left:3px solid var(--accent);background:#ffffff0d;border-radius:4px;font-size:13px}
+  .qfoot{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
+  .qfoot .sc{color:var(--muted);font-size:13px}
+  .cl{border:1px solid #ffffff1f;border-radius:10px;padding:14px 16px;margin-top:18px;background:var(--panel)}
+  .cl .cap{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:8px}
+  .cl a{display:block;color:var(--text);text-decoration:none;padding:5px 0;font-size:13px}
+  .cl a:hover{color:#67e8f9}
+  .cl .tag{font-size:10px;font-weight:700;text-transform:uppercase;color:#67e8f9;margin-right:6px}
+  .qc{border:1px solid #ffffff1f;border-radius:10px;padding:14px 16px;margin-top:12px}
+  .qc .cap{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:8px}
+  .qc .qt{font-size:14px;font-weight:600;margin-bottom:10px}
+  .qc .qcopt{display:block;width:100%;text-align:left;background:var(--panel);color:var(--text);border:1px solid #ffffff1f;border-radius:8px;padding:9px 12px;margin:6px 0;cursor:pointer;font-size:13px;font-family:inherit}
+  .qc .qcopt:hover:not(:disabled){border-color:var(--accent)}
+  .qc .qcopt.ok{border-color:var(--ok);background:#2ea56b22}
+  .qc .qcopt.bad{border-color:var(--bad);background:#c2453e22}
+  .qc .qcexplain{display:none;margin-top:10px;padding:10px;border-left:3px solid var(--accent);background:#ffffff0d;border-radius:4px;font-size:12px}
+  .report-card{padding:24px;max-width:580px;margin:0 auto}
+  .report-card h4{margin:16px 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .report-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #ffffff14;font-size:14px}
+  .report-row .grade{font-weight:700}
+  .grade-A{color:#2EA56B}.grade-B{color:#9ad24a}.grade-C{color:#e0b63c}.grade-D,.grade-F{color:#C2453E}.grade-dash{color:var(--muted)}
+  .report-overall{display:flex;align-items:baseline;gap:10px;margin:14px 0}
+  .report-overall .big{font-size:38px;font-weight:800;color:#67e8f9}
+  @media print{
+    header,.pills,nav,.report-card button{display:none!important}
+    body{background:#fff;color:#111}
+    .report-row{border-bottom-color:#ddd}
+  }
+</style>
+</head>
 <body>
-<header><h1>Full-Stack-Job-Board &mdash; Interactive Tour</h1><p id="sub">Lesson 1 of 4 &mdash; concept on the left, the code that implements it on the right.</p></header>
+<header>
+  <h1>🧰 Full-Stack-Job-Board &mdash; Interactive Tour <span style="color:var(--muted);font-weight:400;font-size:12px">· Chain C · concept tour</span></h1>
+  <p>Left: the concept. Right: the real code from this repo that implements it &mdash; concept-only, no live execution engine.</p>
+  <p style="font-size:11px;color:var(--muted);margin-top:4px">Progress (quick checks, quiz score) saves in this browser only &mdash; localStorage, not an account.</p>
+</header>
+<div class="pills" id="pills"></div>
 <main>
   <section class="lesson" id="lesson"></section>
   <section class="practice" id="practice"></section>
 </main>
-<nav><button id="prev">← Prev</button><button id="next">Next &rarr;</button><span id="counter" style="margin-left:auto;align-self:center;opacity:.7"></span></nav>
+<section class="quiz-panel" id="quizPanel" style="display:none"></section>
+<section class="report-card" id="toolPanel" style="display:none"></section>
+<nav>
+  <button class="ghost" onclick="go(-1)">← Previous</button>
+  <span id="counter"></span>
+  <button class="ghost" id="nextBtn" onclick="go(1)">Next →</button>
+</nav>
+
 <script>
-const lessons = [
-  {title:"1 &middot; The Full-Stack Architecture",
-   left:`<p>Every request takes the same trip. The browser holds <b>UI state</b>; the server owns <b>data state</b>. React Query is the cache that keeps them in sync.</p>
-   <div class="diagram">Browser ──fetch──▶ FastAPI ──ORM──▶ Postgres
-   ▲                  │
-   └──JSON + JWT──────┘</div>
-   <p>The API is <b>stateless</b>: every request carries its own JWT, so any server instance can answer it. That's what lets C-4 scale it on Kubernetes.</p>`,
-   right:`<pre># the trip, in one endpoint
-@app.get("/jobs", response_model=list[JobRead])
-def list_jobs(db: Session = Depends(get_db),
-              page: int = 1, size: int = 20):
-    off, lim = paginate(page, size)
-    return db.scalars(
-        select(Job).offset(off).limit(lim)
-    ).all()</pre>`},
-  {title:"2 &middot; JWT Authentication",
-   left:`<p>Auth is a four-step pipeline. The password is <b>never stored</b> &mdash; only its bcrypt hash. The token is signed, not encrypted, so the server trusts it without a DB lookup.</p>
-   <div class="diagram"><span class="step">register</span> ▶ hash(pw) ▶ store user
-<span class="step">login</span>    ▶ verify(pw, hash) ▶ sign JWT
-<span class="step">request</span>  ▶ Authorization: Bearer &lt;jwt&gt;
-<span class="step">protect</span>  ▶ decode + load user</div>`,
-   right:`<pre>def create_token(sub: str) -> str:
-    payload = {"sub": sub,
-               "exp": utcnow() + timedelta(hours=12)}
-    return jwt.encode(payload, SECRET_KEY, "HS256")
-
-def get_current_user(token = Depends(oauth2),
-                     db = Depends(get_db)) -> User:
-    sub = jwt.decode(token, SECRET_KEY, ["HS256"])["sub"]
-    return db.get(User, int(sub))  # 401 if None</pre>`},
-  {title:"3 &middot; React Query &mdash; Server State",
-   left:`<p><code>useEffect</code> + <code>useState</code> reinvents caching, loading flags, and refetch logic in every component. React Query does it once.</p>
-   <p>A <b>mutation</b> invalidates the query key, and every component reading that key re-renders with fresh data &mdash; no manual wiring.</p>`,
-   right:`<pre>function useJobs() {
-  return useQuery({ queryKey: ["jobs"],
-                    queryFn: () => api.get("/jobs") });
+// ---------- diagram helpers (Standard 3: concept-only -> small inline SVGs) ----------
+function architectureSVG(){
+  return `<div class="diagram-card"><figcaption>every request makes the same round trip &mdash; the API never remembers you between requests, the JWT does</figcaption>
+  <svg viewBox="0 0 640 160" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="55" width="120" height="50" rx="8" fill="#0e7490"/>
+    <text x="80" y="85" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">Browser</text>
+    <rect x="260" y="55" width="120" height="50" rx="8" fill="#22D3EE"/>
+    <text x="320" y="85" text-anchor="middle" font-size="11" font-weight="700" fill="#06222b">FastAPI</text>
+    <rect x="500" y="55" width="120" height="50" rx="8" fill="#0e7490"/>
+    <text x="560" y="85" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">Postgres</text>
+    <line x1="140" y1="68" x2="260" y2="68" stroke="#22D3EE" stroke-width="2" stroke-dasharray="6,6"><animate attributeName="stroke-dashoffset" from="24" to="0" dur="1s" repeatCount="indefinite"/></line>
+    <text x="200" y="60" text-anchor="middle" font-size="9" fill="#374151">GET /jobs + JWT</text>
+    <line x1="380" y1="80" x2="500" y2="80" stroke="#0e7490" stroke-width="2" stroke-dasharray="6,6"><animate attributeName="stroke-dashoffset" from="24" to="0" dur="1s" repeatCount="indefinite"/></line>
+    <text x="440" y="100" text-anchor="middle" font-size="9" fill="#374151">SELECT * FROM jobs</text>
+    <line x1="260" y1="95" x2="140" y2="95" stroke="#9ca3af" stroke-width="2" stroke-dasharray="6,6"><animate attributeName="stroke-dashoffset" from="24" to="0" dur="1.3s" repeatCount="indefinite"/></line>
+    <text x="200" y="118" text-anchor="middle" font-size="9" fill="#6b7280">JSON response</text>
+  </svg></div>`;
 }
-function useCreateJob() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (j) => api.post("/jobs", j),
-    onSuccess: () => qc.invalidateQueries(
-        { queryKey: ["jobs"] }),  // refetch
-  });
-}</pre>`},
-  {title:"4 &middot; Database Migrations",
-   left:`<p>The schema changes over time. Alembic turns each change into a <b>versioned, reversible</b> file so every environment converges to the same shape.</p>
-   <div class="diagram">edit models.py
-  ▶ alembic revision --autogenerate
-  ▶ alembic upgrade head   (forward)
-  ▶ alembic downgrade -1   (rollback)</div>`,
-   right:`<pre># versions/0002_add_application.py
-def upgrade():
-    op.create_table("applications",
-      sa.Column("id", sa.Integer, primary_key=True),
-      sa.Column("job_id", sa.ForeignKey("jobs.id")),
-      sa.Column("user_id", sa.ForeignKey("users.id")))
+function jwtFlowSVG(){
+  return `<div class="diagram-card"><figcaption>four stages &mdash; only "protect" happens on every request; the first three happen once</figcaption>
+  <svg viewBox="0 0 640 170" xmlns="http://www.w3.org/2000/svg">
+    ${["register","login","request","protect"].map((label,idx)=>{
+      const x=30+idx*155;
+      return `<rect x="${x}" y="30" width="130" height="44" rx="8" fill="${idx===3?'#22D3EE':'#0e7490'}"/>
+      <text x="${x+65}" y="57" text-anchor="middle" font-size="11" font-weight="700" fill="${idx===3?'#06222b':'#fff'}">${label}</text>`;
+    }).join('')}
+    ${[0,1,2].map(idx=>{
+      const x1=30+idx*155+130, x2=30+(idx+1)*155;
+      return `<line x1="${x1}" y1="52" x2="${x2}" y2="52" stroke="#22D3EE" stroke-width="2" stroke-dasharray="6,6"><animate attributeName="stroke-dashoffset" from="24" to="0" dur="1s" repeatCount="indefinite"/></line>`;
+    }).join('')}
+    <text x="95" y="105" text-anchor="middle" font-size="9" fill="#374151">hash(pw) &rarr; store</text>
+    <text x="250" y="105" text-anchor="middle" font-size="9" fill="#374151">verify(pw) &rarr; sign JWT</text>
+    <text x="405" y="105" text-anchor="middle" font-size="9" fill="#374151">Authorization: Bearer &lt;jwt&gt;</text>
+    <text x="560" y="105" text-anchor="middle" font-size="9" fill="#374151">decode &rarr; load user</text>
+  </svg></div>`;
+}
+function reactQuerySVG(){
+  return `<div class="diagram-card"><figcaption>a mutation doesn't touch the UI directly &mdash; it invalidates the cache key, and every subscriber refetches</figcaption>
+  <svg viewBox="0 0 640 150" xmlns="http://www.w3.org/2000/svg">
+    <rect x="30" y="50" width="140" height="50" rx="8" fill="#0e7490"/>
+    <text x="100" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">useCreateJob()</text>
+    <rect x="260" y="50" width="150" height="50" rx="8" fill="#22D3EE"/>
+    <text x="335" y="75" text-anchor="middle" font-size="10" font-weight="700" fill="#06222b">["jobs"] cache</text>
+    <text x="335" y="90" text-anchor="middle" font-size="9" fill="#06222b">invalidated</text>
+    <rect x="490" y="20" width="130" height="36" rx="8" fill="#f3f4f6" stroke="#9ca3af"/>
+    <text x="555" y="43" text-anchor="middle" font-size="9" fill="#374151">JobList (re-renders)</text>
+    <rect x="490" y="88" width="130" height="36" rx="8" fill="#f3f4f6" stroke="#9ca3af"/>
+    <text x="555" y="111" text-anchor="middle" font-size="9" fill="#374151">JobCount (re-renders)</text>
+    <line x1="170" y1="75" x2="260" y2="75" stroke="#22D3EE" stroke-width="2" stroke-dasharray="6,6"><animate attributeName="stroke-dashoffset" from="24" to="0" dur="1s" repeatCount="indefinite"/></line>
+    <line x1="410" y1="65" x2="490" y2="40" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5,5"/>
+    <line x1="410" y1="85" x2="490" y2="106" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5,5"/>
+  </svg></div>`;
+}
+function migrationSVG(){
+  return `<div class="diagram-card"><figcaption>autogenerate diffs models.py against the live schema &mdash; it writes the obvious migrations, not the ones it can't infer</figcaption>
+  <svg viewBox="0 0 640 140" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="45" width="150" height="46" rx="8" fill="#0e7490"/>
+    <text x="95" y="73" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">models.py (target)</text>
+    <rect x="245" y="45" width="150" height="46" rx="8" fill="#f3f4f6" stroke="#9ca3af"/>
+    <text x="320" y="73" text-anchor="middle" font-size="10" font-weight="700" fill="#374151">live DB schema</text>
+    <rect x="470" y="45" width="150" height="46" rx="8" fill="#22D3EE"/>
+    <text x="545" y="68" text-anchor="middle" font-size="10" font-weight="700" fill="#06222b">versions/000X_*.py</text>
+    <text x="545" y="82" text-anchor="middle" font-size="8" fill="#06222b">upgrade() / downgrade()</text>
+    <line x1="170" y1="68" x2="245" y2="68" stroke="#22D3EE" stroke-width="2" stroke-dasharray="6,6"><animate attributeName="stroke-dashoffset" from="24" to="0" dur="1s" repeatCount="indefinite"/></line>
+    <line x1="395" y1="68" x2="470" y2="68" stroke="#22D3EE" stroke-width="2" stroke-dasharray="6,6"><animate attributeName="stroke-dashoffset" from="24" to="0" dur="1s" repeatCount="indefinite"/></line>
+    <text x="207" y="30" text-anchor="middle" font-size="9" fill="#6b7280">diff</text>
+    <text x="432" y="30" text-anchor="middle" font-size="9" fill="#6b7280">write</text>
+  </svg></div>`;
+}
 
-def downgrade():
-    op.drop_table("applications")</pre>`},
+const LESSONS = [
+{
+  short:"1. Architecture",
+  title:"1 — The Full-Stack Architecture",
+  body:`<p>Every request makes the same trip: the browser holds <b>UI state</b> (what's on screen right now); the API owns <b>data state</b> (what's actually true, in Postgres). The API is <b>stateless</b> &mdash; it keeps nothing in memory between requests. Every request carries its own JWT, so any running instance of the API can answer it, which is exactly what lets <a href="../../../Chain-C/Kubernetes-IaC-Deployment" style="color:#67e8f9">C-4</a> run several copies behind a load balancer.</p>
+  <p><b>The trap:</b> it's tempting to reach for a server-side session (an in-memory dict keyed by session id) the first time you need "who's logged in." That works fine with one API process — and breaks the moment you run two. Say C-4 scales this API to 3 replicas behind a load balancer: a session stored in replica #1's memory is invisible to replica #2, so a user whose request happens to land on a different replica gets logged out at random. A JWT sidesteps this entirely because the token itself (not a server-side lookup) proves who the user is &mdash; any replica can verify the signature without asking the others.</p>`,
+  diagram: architectureSVG(),
+  code:`# backend/app/routers/jobs.py — the full trip in one endpoint\n@router.get("", response_model=list[JobRead])\ndef list_jobs(page: int = 1, size: int = 20,\n              db: Session = Depends(get_db)) -> list[Job]:\n    offset, limit = paginate(page, size)\n    return list(db.scalars(\n        select(Job).order_by(Job.created_at.desc())\n                   .offset(offset).limit(limit)\n    ))`,
+  continueLearning:[
+    {type:"read",label:"FastAPI — Dependencies (Depends())",url:"https://fastapi.tiangolo.com/tutorial/dependencies/"},
+    {type:"read",label:"SQLAlchemy 2.0 — ORM Querying Guide",url:"https://docs.sqlalchemy.org/en/20/orm/queryguide/index.html"}
+  ],
+  quickCheck:{
+    q:"Why does keeping the API stateless (no server-side session memory) matter once you run more than one instance of it?",
+    options:[
+      {t:"A stateless API doesn't need a database at all",ok:false},
+      {t:"Any running instance can answer any request, since the JWT (not server memory) proves who the caller is",ok:true},
+      {t:"Statelessness only matters for performance, not correctness",ok:false}
+    ],
+    explain:"An in-memory session lives on exactly one server process. The moment you run more than one (C-4's whole point), a request can land on a replica that's never heard of that session — a self-contained JWT has no such blind spot."
+  }
+},
+{
+  short:"2. JWT Auth",
+  title:"2 — JWT Authentication",
+  body:`<p>Auth is a four-step pipeline, and <code>app/security.py</code> implements exactly these four functions. The password is <b>never stored</b> &mdash; only its bcrypt hash (<code>hash_password</code>). The token is <b>signed, not encrypted</b>: anyone who intercepts it can read the payload (<code>{"sub": "42", "exp": ...}</code>) in plain text by just base64-decoding it, but only the server &mdash; the one holding <code>SECRET_KEY</code> &mdash; can produce a signature that <code>decode_token</code> will accept as valid.</p>
+  <p><b>The trap:</b> "signed" gets misread as "encrypted," and that misreading has a real consequence. Say a future feature adds the user's role to the token for a quick client-side check: <code>payload = {"sub": subject, "role": user.role, "exp": expire}</code>. That role claim is now sitting in plain text in a token the browser stores and the network carries &mdash; anyone who captures that request (a coworker on the same Wi-Fi, a misconfigured logging proxy) can read it with zero cryptography, just <code>atob()</code> on the middle segment. The signature stops someone from <i>forging</i> a token; it does nothing to stop someone from <i>reading</i> one. Anything secret has no business inside a JWT payload.</p>`,
+  diagram: jwtFlowSVG(),
+  code:`# backend/app/security.py — real code, not a stub\ndef create_access_token(subject: str) -> str:\n    expire = datetime.now(timezone.utc) + timedelta(\n        hours=settings.access_token_expire_hours)\n    payload = {"sub": subject, "exp": expire}\n    return jwt.encode(payload, settings.secret_key, algorithm="HS256")\n\ndef decode_token(token: str) -> str | None:\n    try:\n        return jwt.decode(token, settings.secret_key,\n                           algorithms=["HS256"]).get("sub")\n    except jwt.JWTError:\n        return None`,
+  continueLearning:[
+    {type:"read",label:"FastAPI — OAuth2 with Password (and hashing), Bearer with JWT",url:"https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/"},
+    {type:"read",label:"jwt.io — Introduction to JSON Web Tokens",url:"https://jwt.io/introduction"}
+  ],
+  quickCheck:{
+    q:"A JWT's payload contains {\"sub\": \"42\", \"exp\": ...}. Is that payload readable by anyone who intercepts the token?",
+    options:[
+      {t:"No — the payload is encrypted, only the server can read it",ok:false},
+      {t:"Yes — the payload is only signed, not encrypted, so anyone can base64-decode and read it; the signature just stops forgery",ok:true},
+      {t:"It depends on whether HTTPS is used for the request",ok:false}
+    ],
+    explain:"Signing proves the token wasn't tampered with and wasn't forged by someone without SECRET_KEY — it says nothing about confidentiality. That's exactly why nothing sensitive belongs inside a JWT payload."
+  }
+},
+{
+  short:"3. React Query",
+  title:"3 — React Query: Server State",
+  body:`<p><code>useEffect</code> + <code>useState</code> reinvents loading flags, caching, and refetch logic in every single component that needs server data. React Query (TanStack Query) does it once, centrally: <code>useJobs()</code> fetches and caches under the key <code>["jobs"]</code>; any component calling it shares that one cache entry instead of each firing its own fetch.</p>
+  <p><b>The trap:</b> a mutation succeeding does not, by itself, change anything on screen — <code>useCreateJob</code>'s <code>mutationFn</code> posts the new job and gets a <code>201</code> back, but the <code>["jobs"]</code> query cache still holds the old list until something tells it to refetch. Say a hiring manager posts a job and the UI doesn't call <code>invalidateQueries</code> afterward: the POST genuinely succeeded (it's in the database, a page refresh would show it), but the manager is staring at a job list that hasn't changed and reasonably assumes the submission failed. <code>onSuccess: () => qc.invalidateQueries({queryKey:["jobs"]})</code> is what closes that gap — it marks the cache stale and triggers the refetch that makes the new job actually appear.</p>`,
+  diagram: reactQuerySVG(),
+  code:`// frontend/src/hooks/useJobs.ts — real code, not a stub\nexport function useJobs() {\n  return useQuery({\n    queryKey: ["jobs"],\n    queryFn: async () => (await api.get<Job[]>("/jobs")).data,\n  });\n}\n\nexport function useCreateJob() {\n  const qc = useQueryClient();\n  return useMutation({\n    mutationFn: async (job) => (await api.post<Job>("/jobs", job)).data,\n    onSuccess: () => qc.invalidateQueries({ queryKey: ["jobs"] }),\n  });\n}`,
+  continueLearning:[
+    {type:"read",label:"TanStack Query — Query Invalidation",url:"https://tanstack.com/query/latest/docs/framework/react/guides/query-invalidation"},
+    {type:"read",label:"TanStack Query — Important Defaults",url:"https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults"}
+  ],
+  quickCheck:{
+    q:"useCreateJob's POST to /jobs returns 201, but the job list on screen doesn't update. What's the most likely cause?",
+    options:[
+      {t:"The POST actually failed silently",ok:false},
+      {t:"onSuccess never called invalidateQueries, so the [\"jobs\"] cache is still serving its old, stale data",ok:true},
+      {t:"React Query doesn't support POST requests",ok:false}
+    ],
+    explain:"A successful mutation and a stale query cache are two independent facts. invalidateQueries is the explicit link between them — without it, the cache has no reason to know the data it's serving is now out of date."
+  }
+},
+{
+  short:"4. Migrations",
+  title:"4 — Database Migrations",
+  body:`<p>The schema changes over time as <code>app/models.py</code> grows. Alembic turns each change into a <b>versioned, reversible</b> file so every environment &mdash; your machine, a teammate's, Railway in production &mdash; converges to the same shape by replaying the same steps, instead of each one drifting based on whoever last ran a manual <code>ALTER TABLE</code>.</p>
+  <p><b>The trap:</b> <code>alembic revision --autogenerate</code> diffs your models against the live schema and writes the "obvious" migration &mdash; but it compares by name, so a rename looks identical to a drop-and-add. Say a later pass on this project renames <code>Job.location</code> to <code>Job.city</code> directly in <code>models.py</code>. Autogenerate doesn't see "location became city" &mdash; it sees a column named <code>location</code> that's gone and an unrelated column named <code>city</code> that's new, and writes <code>drop_column("location")</code> + <code>add_column("city")</code>. Run that migration against a database with real rows and every existing job silently loses its location data, because the generated migration has no idea the two columns were ever related. The fix is to open the generated file and hand-edit it into <code>op.alter_column("jobs", "location", new_column_name="city")</code> before running it &mdash; autogenerate is a draft, not an authority.</p>`,
+  diagram: migrationSVG(),
+  code:`# alembic/versions/0002_add_applications.py\n# (this repo's models.py already defines Application —\n#  this is the migration that would create its table)\ndef upgrade():\n    op.create_table(\n        "applications",\n        sa.Column("id", sa.Integer, primary_key=True),\n        sa.Column("job_id", sa.ForeignKey("jobs.id")),\n        sa.Column("user_id", sa.ForeignKey("users.id")),\n        sa.Column("cover_letter", sa.String(), server_default=""),\n    )\n\ndef downgrade():\n    op.drop_table("applications")`,
+  continueLearning:[
+    {type:"read",label:"Alembic — Auto Generating Migrations",url:"https://alembic.sqlalchemy.org/en/latest/autogenerate.html"}
+  ],
+  quickCheck:{
+    q:"A later change renames Job.location to Job.city in models.py. What does `alembic revision --autogenerate` do?",
+    options:[
+      {t:"It detects the rename and writes alter_column(new_column_name=\"city\")",ok:false},
+      {t:"It writes drop_column(\"location\") + add_column(\"city\") — autogenerate compares by name and can't infer that two differently-named columns are related",ok:true},
+      {t:"It refuses to generate a migration until the rename is reverted",ok:false}
+    ],
+    explain:"Autogenerate's documented limitation is exactly this: it detects additions and removals, not renames. Running the generated migration as-is against real data would silently drop every row's location value."
+  }
+}
 ];
+
 let i = 0;
-const L = document.getElementById("lesson"), P = document.getElementById("practice");
-const sub = document.getElementById("sub"), counter = document.getElementById("counter");
-function render(){
-  const l = lessons[i];
-  L.innerHTML = "<h2>"+l.title+"</h2>"+l.left;
-  P.innerHTML = "<h2>The Code</h2>"+l.right;
-  sub.textContent = "Lesson "+(i+1)+" of "+lessons.length+" &mdash; concept on the left, code on the right.";
-  counter.textContent = (i+1)+" / "+lessons.length;
-  document.getElementById("prev").disabled = i===0;
-  document.getElementById("next").disabled = i===lessons.length-1;
+const el = id => document.getElementById(id);
+
+const QC_KEY = 'chainC_fullStackJobBoard_v1';
+function loadQC(){ try{ const raw = localStorage.getItem(QC_KEY); return raw ? JSON.parse(raw) : null; } catch(e){ return null; } }
+const QC_SAVED = loadQC();
+const qcAnswered = (QC_SAVED && Array.isArray(QC_SAVED.qcAnswered) && QC_SAVED.qcAnswered.length===LESSONS.length)
+  ? QC_SAVED.qcAnswered.slice() : new Array(LESSONS.length).fill(false);
+let bestQuizScore = (QC_SAVED && typeof QC_SAVED.quizScore === 'number') ? QC_SAVED.quizScore : null;
+function saveQC(){ try{ localStorage.setItem(QC_KEY, JSON.stringify({qcAnswered, quizScore: bestQuizScore})); } catch(e){} }
+
+function renderCL(links){
+  if(!links || !links.length) return '';
+  const rows = links.map(l=>'<a href="'+l.url+'" target="_blank" rel="noopener"><span class="tag">'+(l.type==='watch'?'Watch':'Read')+'</span>'+l.label+'</a>').join('');
+  return '<div class="cl"><div class="cap">📚 Continue Learning</div>'+rows+'</div>';
 }
-document.getElementById("prev").onclick=()=>{if(i>0){i--;render();}};
-document.getElementById("next").onclick=()=>{if(i<lessons.length-1){i++;render();}};
+function renderQC(idx){
+  const l = LESSONS[idx];
+  if(!l.quickCheck) return '';
+  const done = qcAnswered[idx];
+  const q = l.quickCheck;
+  const opts = q.options.map((o,oi)=>'<button class="qcopt '+(done && o.ok?'ok':'')+'" data-oi="'+oi+'" '+(done?'disabled':'')+'>'+o.t+'</button>').join('');
+  return '<div class="qc"><div class="cap">✓ Quick Check</div><div class="qt">'+q.q+'</div>'+
+    '<div id="qcopts-'+idx+'">'+opts+'</div>'+
+    '<div class="qcexplain" id="qcexplain-'+idx+'" style="'+(done?'display:block':'')+'">'+q.explain+'</div>'+
+    (done?'':'<div class="note" style="margin-top:8px">Answer to unlock &ldquo;Next&rdquo;.</div>')+'</div>';
+}
+function pickQC(lessonIdx, oi){
+  if(qcAnswered[lessonIdx]) return;
+  qcAnswered[lessonIdx]=true;
+  const q=LESSONS[lessonIdx].quickCheck;
+  document.querySelectorAll('#qcopts-'+lessonIdx+' .qcopt').forEach((b,bi)=>{
+    b.disabled=true; if(q.options[bi].ok) b.classList.add('ok'); else if(bi===oi) b.classList.add('bad');
+  });
+  el('qcexplain-'+lessonIdx).style.display='block';
+  saveQC();
+  updateNextEnabled();
+}
+function updateNextEnabled(){
+  const nb = el('nextBtn');
+  if(nb) nb.disabled = !qcAnswered[i];
+}
+
+function render(){
+  const l = LESSONS[i];
+  el('lesson').innerHTML = '<h2>'+l.title+'</h2>'+l.body+renderCL(l.continueLearning)+renderQC(i);
+  const qcContainer = el('qcopts-'+i);
+  if(qcContainer){ qcContainer.querySelectorAll('.qcopt').forEach(btn=>{ btn.onclick=()=>pickQC(i, +btn.dataset.oi); }); }
+  el('practice').innerHTML = '<h3>Diagram + Code</h3>' + l.diagram + '<pre>'+l.code.replace(/</g,'&lt;')+'</pre>';
+  el('counter').textContent=(i+1)+' / '+LESSONS.length;
+  document.querySelectorAll('.pill').forEach((p,idx)=>p.classList.toggle('active',idx===i));
+  updateNextEnabled();
+}
+function go(d){ i=Math.max(0,Math.min(LESSONS.length-1,i+d)); render(); }
+function showLesson(){
+  el('quizPanel').style.display='none';
+  el('toolPanel').style.display='none';
+  document.querySelector('main').style.display='grid';
+  document.querySelector('nav').style.display='flex';
+}
+
+const QUIZ = [
+  {q:"Why does keeping the API stateless matter once C-4 scales it to multiple replicas?",
+   options:[{t:"A JWT proves identity on its own, so any replica can answer a request without a shared server-side session",ok:true},{t:"Stateless APIs use less disk space",ok:false},{t:"It only matters for the database, not the API",ok:false}],
+   explain:"An in-memory session lives on one process. A self-contained JWT has no such blind spot — any replica can verify it independently."},
+  {q:"Why is it safe for a JWT's signature to travel over the network, but not safe to put a secret inside its payload?",
+   options:[{t:"The signature proves authenticity without revealing SECRET_KEY; the payload itself is just base64 — readable by anyone who has the token",ok:true},{t:"Both the signature and payload are fully encrypted",ok:false},{t:"Neither the signature nor the payload can be read without HTTPS",ok:false}],
+   explain:"Signing (HMACSHA256 with SECRET_KEY) proves the token wasn't forged. It does nothing to hide the payload's contents from anyone who intercepts the token."},
+  {q:"After useCreateJob's mutation succeeds, what makes the on-screen job list actually update?",
+   options:[{t:"The POST response automatically pushes the new job into every component",ok:false},{t:"onSuccess calling invalidateQueries({queryKey:[\"jobs\"]}), which marks the cache stale and triggers a refetch",ok:true},{t:"The browser automatically refreshes the page",ok:false}],
+   explain:"A successful mutation and a stale cache are two separate facts until invalidateQueries explicitly connects them."},
+  {q:"Job.location gets renamed to Job.city in models.py. What will `alembic revision --autogenerate` actually generate?",
+   options:[{t:"alter_column with new_column_name=\"city\", preserving existing data",ok:false},{t:"drop_column(\"location\") + add_column(\"city\") — it can't detect renames, only additions/removals",ok:true},{t:"Nothing — it refuses to run until you resolve the rename manually first",ok:false}],
+   explain:"Autogenerate compares the model and the live schema by column name. A rename looks like an unrelated drop + add, and running it as-is would silently discard every row's existing value."},
+  {q:"In create_job, the 403 check for non-employers runs AFTER get_current_user has already authenticated the caller. Why separate these two checks?",
+   options:[{t:"Authentication (who you are) and authorization (what you're allowed to do) are different questions — collapsing them risks letting an authenticated-but-wrong-role user through",ok:true},{t:"FastAPI requires all checks to happen in this specific order",ok:false},{t:"It's purely a performance optimization",ok:false}],
+   explain:"get_current_user proves identity. The is_employer check decides permission for that already-identified user — conflating the two is how a logged-in user ends up doing something only a different role should be allowed to do."},
+  {q:"Why do Job and Application use cascade=\"all, delete-orphan\" on their relationship to User?",
+   options:[{t:"It makes queries run faster",ok:false},{t:"Deleting a User also deletes their Jobs/Applications, so no row is left pointing at a user_id that no longer exists",ok:true},{t:"It's required syntax with no functional effect",ok:false}],
+   explain:"Without cascade delete, removing a user would either fail on the foreign key constraint or leave orphaned rows pointing at a deleted user — cascade keeps the data consistent."}
+];
+let qi=0, qscore=0, qansw=false;
+function openQuiz(){
+  document.querySelector('main').style.display='none';
+  document.querySelector('nav').style.display='none';
+  el('quizPanel').style.display='block';
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  el('quizpill').classList.add('active');
+  qi=0; qscore=0; renderQuiz();
+}
+function renderQuiz(){
+  qansw=false;
+  const it=QUIZ[qi];
+  el('quizPanel').innerHTML='<h2>Check Your Understanding</h2>'+
+    '<div class="qtext">'+(qi+1)+' / '+QUIZ.length+' &mdash; '+it.q+'</div><div id="qopts"></div>'+
+    '<div class="qexplain" id="qexplain">'+it.explain+'</div>'+
+    '<div class="qfoot"><span class="sc" id="qsc">Score: '+qscore+' / '+QUIZ.length+'</span>'+
+    '<button class="ghost" id="qnext" disabled onclick="nextQuiz()">'+(qi===QUIZ.length-1?'See score →':'Next →')+'</button></div>';
+  const o=el('qopts');
+  it.options.forEach((op,idx)=>{const b=document.createElement('button');b.className='qopt';b.textContent=op.t;b.onclick=(e)=>pickQuiz(idx,e.currentTarget);o.appendChild(b);});
+}
+function pickQuiz(idx,btn){
+  if(qansw)return; qansw=true;
+  const it=QUIZ[qi];
+  el('qopts').querySelectorAll('.qopt').forEach((b,i2)=>{b.disabled=true;if(it.options[i2].ok)b.classList.add('ok');});
+  if(it.options[idx].ok){qscore++;el('qsc').textContent='Score: '+qscore+' / '+QUIZ.length;} else btn.classList.add('bad');
+  el('qexplain').style.display='block'; el('qnext').disabled=false;
+}
+function nextQuiz(){ qi++; if(qi<QUIZ.length)renderQuiz(); else finishQuiz(); }
+function finishQuiz(){
+  const pct=Math.round(qscore/QUIZ.length*100);
+  const msg=pct===100?'Perfect — you’ve got this.':pct>=70?'Solid understanding.':pct>=40?'Good start — revisit the lessons you missed.':'Worth another pass through the lessons.';
+  el('quizPanel').innerHTML='<h2>Check Your Understanding</h2><div class="qtext">You scored '+qscore+' / '+QUIZ.length+' ('+pct+'%)</div><p>'+msg+'</p>'+
+    '<button class="ghost" onclick="restartQuiz()">↺ Retake</button> <button class="ghost" onclick="showLesson()">← Back to lessons</button>';
+  bestQuizScore = (bestQuizScore===null) ? qscore : Math.max(bestQuizScore, qscore);
+  saveQC();
+}
+function restartQuiz(){ qi=0; qscore=0; renderQuiz(); }
+
+function letterGrade(pct){
+  if(pct===null) return {text:'—',cls:'grade-dash'};
+  if(pct>=90) return {text:'A',cls:'grade-A'};
+  if(pct>=80) return {text:'B',cls:'grade-B'};
+  if(pct>=70) return {text:'C',cls:'grade-C'};
+  if(pct>=60) return {text:'D',cls:'grade-D'};
+  return {text:'F',cls:'grade-F'};
+}
+function renderReportCard(){
+  const qcDone = qcAnswered.filter(Boolean).length;
+  const attempted = bestQuizScore !== null;
+  const pct = attempted ? Math.round(bestQuizScore/QUIZ.length*100) : null;
+  const grade = letterGrade(attempted?pct:null);
+  const overallItems = qcDone + (attempted?1:0);
+  const overallTotal = LESSONS.length+1;
+  const overallPct = Math.round(overallItems/overallTotal*100);
+  const now = new Date();
+  el('toolPanel').innerHTML =
+    '<h2 style="color:#67e8f9;margin-top:0">Report Card</h2>'+
+    '<p style="color:var(--muted);font-size:12px;margin-top:-6px">Full-Stack-Job-Board &middot; generated '+now.toLocaleDateString()+' '+now.toLocaleTimeString()+'</p>'+
+    '<div class="report-overall"><span class="big '+grade.cls+'">'+grade.text+'</span><span style="color:var(--muted);font-size:13px">Final quiz grade'+(attempted?'':' (not yet taken)')+'</span></div>'+
+    '<h4>Lessons</h4><div class="report-row"><span>Quick checks completed</span><span class="grade">'+qcDone+' / '+LESSONS.length+'</span></div>'+
+    '<h4>Final Quiz</h4><div class="report-row"><span>Best score</span><span class="grade">'+(attempted?(bestQuizScore+' / '+QUIZ.length+' ('+pct+'%)'):'Not attempted')+'</span></div>'+
+    '<h4>Overall</h4><div class="report-row"><span>Lessons + quiz completed</span><span class="grade">'+overallItems+' / '+overallTotal+' ('+overallPct+'%)</span></div>'+
+    '<button class="ghost" id="printBtn" style="margin-top:16px">🖨️ Print / Save as PDF</button>'+
+    '<p style="color:var(--muted);font-size:11px;margin-top:8px">In the print dialog, choose <b>Save as PDF</b> and save it into this project\'s <code>docs/</code> folder to keep a dated record.</p>';
+  el('printBtn').onclick = ()=>window.print();
+}
+function openReportCard(){
+  document.querySelector('main').style.display='none';
+  document.querySelector('nav').style.display='none';
+  el('quizPanel').style.display='none';
+  el('toolPanel').style.display='block';
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  el('reportpill').classList.add('active');
+  renderReportCard();
+}
+
+const pills=el('pills');
+LESSONS.forEach((l,idx)=>{const b=document.createElement('div');b.className='pill';b.textContent=l.short;b.onclick=()=>{showLesson();i=idx;render();};pills.appendChild(b);});
+const qp=document.createElement('div');qp.className='pill';qp.id='quizpill';qp.textContent='✓ Quiz';qp.onclick=openQuiz;pills.appendChild(qp);
+const rp=document.createElement('div');rp.className='pill';rp.id='reportpill';rp.textContent='📊 Report Card';rp.onclick=openReportCard;pills.appendChild(rp);
 render();
 </script>
-</body></html>
+</body>
+</html>

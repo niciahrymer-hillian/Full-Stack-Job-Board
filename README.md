@@ -7,6 +7,12 @@
 
 <!-- SCREENSHOT PLACEHOLDER: docs/screenshots/overview.png -->
 
+> **Why this matters:** This is the default shape of production web
+> applications — a typed REST API, JWT auth, a migrated relational schema, and a
+> server-state cache on the client — hired for as *Full-Stack Engineer* and
+> *Backend/Frontend Engineer*. It's the foundational pattern the rest of Chain C
+> containerizes, extends, and deploys to Kubernetes.
+
 ## Why This Was Built
 
 Almost every web product is the same shape underneath: a typed API, a token-based
